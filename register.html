@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register – MN Fitness</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/auth.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="auth-body">
+
+<div class="auth-container">
+  <!-- Left Panel -->
+  <div class="auth-left">
+    <a href="index.html" class="auth-logo">
+      <span class="logo-icon">💪</span>
+      <span>MN <span class="text-primary">Fitness</span></span>
+    </a>
+    <div class="auth-left-content">
+      <h2>Start Your <span class="text-primary">Fitness Journey</span></h2>
+      <p>Join thousands of members who have transformed their bodies and lives with MN Fitness.</p>
+      <div class="auth-features">
+        <div class="auth-feature"><i class="fas fa-check-circle"></i> Free to join</div>
+        <div class="auth-feature"><i class="fas fa-check-circle"></i> Personalized plans</div>
+        <div class="auth-feature"><i class="fas fa-check-circle"></i> Expert guidance</div>
+        <div class="auth-feature"><i class="fas fa-check-circle"></i> Track your progress</div>
+      </div>
+    </div>
+    <div class="auth-left-bg"></div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="auth-right">
+    <div class="auth-form-wrap">
+      <div class="auth-tabs">
+        <a href="login.html" class="auth-tab">Login</a>
+        <a href="register.html" class="auth-tab active">Register</a>
+      </div>
+
+      <h2 class="auth-title">Create Account</h2>
+      <p class="auth-subtitle">Fill in your details to get started</p>
+
+      <div id="registerAlert"></div>
+
+      <!-- Step Indicator -->
+      <div class="step-indicator">
+        <div class="step active" id="step1-ind">
+          <span class="step-num">1</span>
+          <span class="step-label">Account</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step2-ind">
+          <span class="step-num">2</span>
+          <span class="step-label">Profile</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step3-ind">
+          <span class="step-num">3</span>
+          <span class="step-label">Goal</span>
+        </div>
+      </div>
+
+      <form id="registerForm" novalidate>
+        <!-- Step 1: Account Info -->
+        <div class="form-step active" id="step1">
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-user"></i> Username *</label>
+            <input type="text" id="reg-username" class="form-control" placeholder="Choose a username" required minlength="3" />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-envelope"></i> Email (optional)</label>
+            <input type="email" id="reg-email" class="form-control" placeholder="your@email.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-id-card"></i> Full Name (optional)</label>
+            <input type="text" id="reg-fullname" class="form-control" placeholder="Your full name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-lock"></i> Password *</label>
+            <div class="input-password">
+              <input type="password" id="reg-password" class="form-control" placeholder="Min 6 characters" required minlength="6" />
+              <button type="button" class="toggle-password" id="toggleRegPwd">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-lock"></i> Confirm Password *</label>
+            <input type="password" id="reg-confirm" class="form-control" placeholder="Repeat password" required />
+          </div>
+          <button type="button" class="btn btn-primary btn-block" onclick="nextStep(2)">
+            Next <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <!-- Step 2: Physical Info -->
+        <div class="form-step" id="step2">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-birthday-cake"></i> Age</label>
+              <input type="number" id="reg-age" class="form-control" placeholder="e.g. 25" min="10" max="100" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-venus-mars"></i> Gender</label>
+              <select id="reg-gender" class="form-control">
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-ruler-vertical"></i> Height (cm)</label>
+              <input type="number" id="reg-height" class="form-control" placeholder="e.g. 175" min="100" max="250" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-weight"></i> Weight (kg)</label>
+              <input type="number" id="reg-weight" class="form-control" placeholder="e.g. 70" min="30" max="300" />
+            </div>
+          </div>
+          <!-- BMI Preview -->
+          <div id="bmiPreview" class="bmi-preview hidden">
+            <div class="bmi-value" id="bmiValue">--</div>
+            <div class="bmi-label" id="bmiLabel">BMI</div>
+          </div>
+          <div class="form-nav">
+            <button type="button" class="btn btn-dark" onclick="prevStep(1)">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button type="button" class="btn btn-primary" onclick="nextStep(3)">
+              Next <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Goal -->
+        <div class="form-step" id="step3">
+          <p style="color:var(--text-muted);margin-bottom:20px;font-size:0.9rem">
+            Choose your primary fitness goal. You can change this later.
+          </p>
+          <div class="goal-select-grid">
+            <div class="goal-select-card" data-goal="weight_loss" onclick="selectGoal(this)">
+              <div class="goal-select-icon">🔥</div>
+              <div class="goal-select-name">Weight Loss</div>
+              <div class="goal-select-desc">Burn fat & get lean</div>
+            </div>
+            <div class="goal-select-card" data-goal="weight_gain" onclick="selectGoal(this)">
+              <div class="goal-select-icon">💪</div>
+              <div class="goal-select-name">Weight Gain</div>
+              <div class="goal-select-desc">Build muscle mass</div>
+            </div>
+            <div class="goal-select-card" data-goal="bodybuilding" onclick="selectGoal(this)">
+              <div class="goal-select-icon">🏆</div>
+              <div class="goal-select-name">Bodybuilding</div>
+              <div class="goal-select-desc">Sculpt & define</div>
+            </div>
+          </div>
+          <input type="hidden" id="reg-goal" />
+
+          <div class="form-nav" style="margin-top:24px">
+            <button type="button" class="btn btn-dark" onclick="prevStep(2)">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button type="submit" class="btn btn-primary" id="registerBtn">
+              <i class="fas fa-user-plus"></i> Create Account
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <p class="auth-switch">
+        Already have an account? <a href="login.html">Login here</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/api.js"></script>
+<script>
+  let currentStep = 1;
+
+  // Toggle password
+  document.getElementById('toggleRegPwd').addEventListener('click', function() {
+    const pwd = document.getElementById('reg-password');
+    const icon = this.querySelector('i');
+    pwd.type = pwd.type === 'password' ? 'text' : 'password';
+    icon.className = pwd.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+  });
+
+  // BMI Calculator
+  ['reg-height','reg-weight'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calcBMI);
+  });
+
+  function calcBMI() {
+    const h = parseFloat(document.getElementById('reg-height').value);
+    const w = parseFloat(document.getElementById('reg-weight').value);
+    const preview = document.getElementById('bmiPreview');
+    if (h > 0 && w > 0) {
+      const bmi = (w / ((h/100) ** 2)).toFixed(1);
+      let label = '';
+      let color = '';
+      if (bmi < 18.5) { label = 'Underweight'; color = '#17a2b8'; }
+      else if (bmi < 25) { label = 'Normal'; color = '#28a745'; }
+      else if (bmi < 30) { label = 'Overweight'; color = '#ffc107'; }
+      else { label = 'Obese'; color = '#dc3545'; }
+      document.getElementById('bmiValue').textContent = bmi;
+      document.getElementById('bmiValue').style.color = color;
+      document.getElementById('bmiLabel').textContent = 'BMI – ' + label;
+      preview.classList.remove('hidden');
+    } else {
+      preview.classList.add('hidden');
+    }
+  }
+
+  function selectGoal(el) {
+    document.querySelectorAll('.goal-select-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('reg-goal').value = el.dataset.goal;
+  }
+
+  function nextStep(step) {
+    const alertEl = document.getElementById('registerAlert');
+    alertEl.innerHTML = '';
+
+    if (step === 2) {
+      const username = document.getElementById('reg-username').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const confirm = document.getElementById('reg-confirm').value;
+      if (!username || username.length < 3) {
+        alertEl.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Username must be at least 3 characters.</div>';
+        return;
+      }
+      if (!password || password.length < 6) {
+        alertEl.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Password must be at least 6 characters.</div>';
+        return;
+      }
+      if (password !== confirm) {
+        alertEl.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Passwords do not match.</div>';
+        return;
+      }
+    }
+
+    document.getElementById('step' + currentStep).classList.remove('active');
+    document.getElementById('step' + currentStep + '-ind').classList.remove('active');
+    currentStep = step;
+    document.getElementById('step' + currentStep).classList.add('active');
+    document.getElementById('step' + currentStep + '-ind').classList.add('active');
+    // Mark previous steps as completed
+    for (let i = 1; i < currentStep; i++) {
+      document.getElementById('step' + i + '-ind').classList.add('completed');
+    }
+  }
+
+  function prevStep(step) {
+    document.getElementById('step' + currentStep).classList.remove('active');
+    document.getElementById('step' + currentStep + '-ind').classList.remove('active');
+    currentStep = step;
+    document.getElementById('step' + currentStep).classList.add('active');
+    document.getElementById('step' + currentStep + '-ind').classList.add('active');
+  }
+
+  document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const alertEl = document.getElementById('registerAlert');
+    alertEl.innerHTML = '';
+    const btn = document.getElementById('registerBtn');
+
+    const payload = {
+      username: document.getElementById('reg-username').value.trim(),
+      password: document.getElementById('reg-password').value,
+      full_name: document.getElementById('reg-fullname').value.trim() || null,
+      email: document.getElementById('reg-email').value.trim() || null,
+      age: parseInt(document.getElementById('reg-age').value) || null,
+      gender: document.getElementById('reg-gender').value || null,
+      height: parseFloat(document.getElementById('reg-height').value) || null,
+      weight: parseFloat(document.getElementById('reg-weight').value) || null,
+      goal: document.getElementById('reg-goal').value || null,
+    };
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner" style="width:20px;height:20px;border-width:2px"></span> Creating...';
+
+    try {
+      const data = await API.register(payload);
+      localStorage.setItem('token', data.access_token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      showToast('Account created! Welcome to MN Fitness!', 'success');
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+    } catch (err) {
+      alertEl.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> ${err.message || 'Registration failed.'}</div>`;
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+    }
+  });
+</script>
+</body>
+</html>
