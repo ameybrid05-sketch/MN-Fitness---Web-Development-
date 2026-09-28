@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel – MN Fitness</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+  <link rel="stylesheet" href="assets/css/admin.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="dash-body">
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html" class="sidebar-logo">
+      <span>💪</span> MN <span class="text-primary">Fitness</span>
+    </a>
+    <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="sidebar-user">
+    <div class="sidebar-avatar" id="adminAvatar">A</div>
+    <div class="sidebar-user-info">
+      <div class="sidebar-username" id="adminName">Admin</div>
+      <div class="sidebar-role" style="color:var(--gold)">Administrator</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="#" class="sidebar-link active" data-tab="overview"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="#" class="sidebar-link" data-tab="users"><i class="fas fa-users"></i> Users</a>
+    <a href="#" class="sidebar-link" data-tab="trainers"><i class="fas fa-user-tie"></i> Trainers</a>
+    <a href="#" class="sidebar-link" data-tab="assign"><i class="fas fa-clipboard-list"></i> Assign Plans</a>
+    <a href="#" class="sidebar-link" data-tab="feedback"><i class="fas fa-comment-alt"></i> Feedback</a>
+    <a href="#" class="sidebar-link" data-tab="articles"><i class="fas fa-book-open"></i> Articles</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="dashboard.html" class="sidebar-link"><i class="fas fa-user"></i> User Dashboard</a>
+    <button class="sidebar-link logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  </div>
+</aside>
+
+<!-- Main -->
+<div class="dash-main">
+  <header class="dash-header">
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+    <div class="dash-header-title" id="pageTitle">Admin Dashboard</div>
+    <div class="dash-header-right">
+      <span class="badge badge-warning" style="padding:8px 16px"><i class="fas fa-shield-alt"></i> Admin Panel</span>
+    </div>
+  </header>
+
+  <div class="dash-content">
+
+    <!-- ── OVERVIEW ── -->
+    <div class="tab-panel active" id="tab-overview">
+      <div class="welcome-banner">
+        <div class="welcome-text">
+          <h2>Admin Control Panel 🛡️</h2>
+          <p>Manage users, trainers, plans, and platform content from here.</p>
+        </div>
+      </div>
+      <div class="grid-4" style="margin-bottom:24px" id="adminStatsGrid">
+        <div class="stat-card"><div class="stat-icon orange"><i class="fas fa-users"></i></div><div><div class="stat-value" id="statTotalUsers">--</div><div class="stat-label">Total Users</div></div></div>
+        <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-user-check"></i></div><div><div class="stat-value" id="statActiveUsers">--</div><div class="stat-label">Active Users</div></div></div>
+        <div class="stat-card"><div class="stat-icon green"><i class="fas fa-user-tie"></i></div><div><div class="stat-value" id="statTrainers">--</div><div class="stat-label">Trainers</div></div></div>
+        <div class="stat-card"><div class="stat-icon gold"><i class="fas fa-comment-alt"></i></div><div><div class="stat-value" id="statFeedback">--</div><div class="stat-label">Unresolved Feedback</div></div></div>
+      </div>
+      <div class="grid-2">
+        <div class="chart-container">
+          <div class="chart-title">Workout Logs vs Diet Logs</div>
+          <canvas id="adminActivityChart" height="220"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Quick Actions</div></div>
+          <div style="display:flex;flex-direction:column;gap:12px;padding-top:8px">
+            <button class="btn btn-primary" onclick="switchAdminTab('users')"><i class="fas fa-users"></i> Manage Users</button>
+            <button class="btn btn-outline" onclick="switchAdminTab('trainers')"><i class="fas fa-user-tie"></i> Manage Trainers</button>
+            <button class="btn btn-outline" onclick="switchAdminTab('assign')"><i class="fas fa-clipboard-list"></i> Assign Plans</button>
+            <button class="btn btn-outline" onclick="switchAdminTab('feedback')"><i class="fas fa-comment-alt"></i> View Feedback</button>
+            <button class="btn btn-outline" onclick="switchAdminTab('articles')"><i class="fas fa-book-open"></i> Manage Articles</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── USERS ── -->
+    <div class="tab-panel" id="tab-users">
+      <div class="section-header">
+        <div class="section-title">All Users</div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="userSearch" class="form-control" placeholder="Search users..." style="padding-left:36px" oninput="searchUsers(this.value)" />
+          </div>
+          <select id="roleFilter" class="form-control" style="width:140px" onchange="filterByRole(this.value)">
+            <option value="">All Roles</option>
+            <option value="user">Users</option>
+            <option value="trainer">Trainers</option>
+            <option value="admin">Admins</option>
+          </select>
+        </div>
+      </div>
+      <div class="card">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Username</th><th>Full Name</th><th>Email</th><th>Goal</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <tr><td colspan="9" style="text-align:center;padding:30px"><div class="spinner" style="margin:0 auto"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TRAINERS ── -->
+    <div class="tab-panel" id="tab-trainers">
+      <div class="section-header">
+        <div class="section-title">Gym Trainers & Owners</div>
+        <button class="btn btn-primary btn-sm" onclick="openModal('addTrainerModal')">
+          <i class="fas fa-plus"></i> Add Trainer
+        </button>
+      </div>
+      <div class="grid-3" id="trainersGrid">
+        <div class="empty-state"><div class="spinner"></div></div>
+      </div>
+    </div>
+
+    <!-- ── ASSIGN PLANS ── -->
+    <div class="tab-panel" id="tab-assign">
+      <div class="section-header">
+        <div class="section-title">Assign Plans to Users</div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><i class="fas fa-clipboard-list text-primary"></i> Create Plan for User</div></div>
+          <div id="assignAlert"></div>
+          <form id="assignPlanForm">
+            <div class="form-group">
+              <label class="form-label">Select User</label>
+              <select id="assignUserId" class="form-control" required>
+                <option value="">Loading users...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Plan Type</label>
+              <select id="assignPlanType" class="form-control" required>
+                <option value="workout">Workout Plan</option>
+                <option value="diet">Diet Plan</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Goal</label>
+              <select id="assignGoal" class="form-control" required>
+                <option value="weight_loss">🔥 Weight Loss</option>
+                <option value="weight_gain">💪 Weight Gain</option>
+                <option value="bodybuilding">🏆 Bodybuilding</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Plan Title</label>
+              <input type="text" id="assignTitle" class="form-control" placeholder="e.g. Custom 4-Week Fat Loss Plan" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Notes / Instructions</label>
+              <textarea id="assignNotes" class="form-control" rows="4" placeholder="Detailed instructions for the user..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+              <i class="fas fa-paper-plane"></i> Assign Plan
+            </button>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Recently Assigned Plans</div></div>
+          <div id="recentAssignedPlans">
+            <div class="empty-state" style="padding:30px">
+              <div class="empty-state-icon">📋</div>
+              <div class="empty-state-title">No plans assigned yet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FEEDBACK ── -->
+    <div class="tab-panel" id="tab-feedback">
+      <div class="section-header">
+        <div class="section-title">User Feedback</div>
+        <div class="badge badge-warning" id="unresolvedCount">Loading...</div>
+      </div>
+      <div class="card">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>User</th><th>Subject</th><th>Message</th><th>Rating</th><th>Date</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody id="feedbackTableBody">
+              <tr><td colspan="7" style="text-align:center;padding:30px"><div class="spinner" style="margin:0 auto"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ARTICLES ── -->
+    <div class="tab-panel" id="tab-articles">
+      <div class="section-header">
+        <div class="section-title">Manage Articles</div>
+        <button class="btn btn-primary btn-sm" onclick="openModal('addArticleModal')">
+          <i class="fas fa-plus"></i> Add Article
+        </button>
+      </div>
+      <div class="card">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Title</th><th>Category</th><th>Published</th><th>Date</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="articlesTableBody">
+              <tr><td colspan="5" style="text-align:center;padding:30px"><div class="spinner" style="margin:0 auto"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ── MODALS ── -->
+
+<!-- Edit User Role Modal -->
+<div class="modal-overlay" id="editUserModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-user-edit text-primary"></i> Edit User</div>
+      <button class="modal-close" onclick="closeModal('editUserModal')">×</button>
+    </div>
+    <input type="hidden" id="editUserId" />
+    <div class="form-group">
+      <label class="form-label">Role</label>
+      <select id="editUserRole" class="form-control">
+        <option value="user">User</option>
+        <option value="trainer">Trainer</option>
+        <option value="admin">Admin</option>
+        <option value="owner">Owner</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Status</label>
+      <select id="editUserStatus" class="form-control">
+        <option value="true">Active</option>
+        <option value="false">Inactive</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="saveUserEdit()">
+      <i class="fas fa-save"></i> Save Changes
+    </button>
+  </div>
+</div>
+
+<!-- Add Article Modal -->
+<div class="modal-overlay" id="addArticleModal">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-book-open text-primary"></i> Add Article</div>
+      <button class="modal-close" onclick="closeModal('addArticleModal')">×</button>
+    </div>
+    <div id="articleAlert"></div>
+    <form id="addArticleForm">
+      <div class="form-group">
+        <label class="form-label">Title *</label>
+        <input type="text" id="artTitle" class="form-control" required placeholder="Article title" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select id="artCategory" class="form-control">
+          <option value="Fitness Tips">Fitness Tips</option>
+          <option value="Nutrition">Nutrition</option>
+          <option value="Weight Loss">Weight Loss</option>
+          <option value="Bodybuilding">Bodybuilding</option>
+          <option value="Wellness">Wellness</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Content *</label>
+        <textarea id="artContent" class="form-control" rows="8" required placeholder="Write article content here... (supports **bold**)"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">
+        <i class="fas fa-save"></i> Publish Article
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Add Trainer Modal -->
+<div class="modal-overlay" id="addTrainerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fas fa-user-tie text-primary"></i> Promote to Trainer</div>
+      <button class="modal-close" onclick="closeModal('addTrainerModal')">×</button>
+    </div>
+    <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:16px">
+      Select an existing user to promote to Trainer role.
+    </p>
+    <div class="form-group">
+      <label class="form-label">Select User</label>
+      <select id="promoteUserId" class="form-control">
+        <option value="">Select a user...</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="promoteToTrainer()">
+      <i class="fas fa-user-tie"></i> Promote to Trainer
+    </button>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>
